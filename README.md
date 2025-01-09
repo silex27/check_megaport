@@ -27,7 +27,7 @@ CLIENT_ID="YOUR_CLIENT_ID" CLIENT_SECRET="YOUR_CLIENT_SECRET"
 **All good**:
 
 ```sql
-OK - All 2 ports and 3 VXCs are LIVE. | total_ports=2;;;0; live_ports=2;;;0; bad_ports=0;;;0; total_vxcs=3;;;0; live_vxcs=3;;;0; bad_vxcs=0;;;0;
+OK - All 2 ports, 3 VXCs, and 3 VXCs (up attribute) are LIVE. | total_ports=2;;;0; live_ports=2;;;0; bad_ports=0;;;0; total_vxcs=3;;;0; live_vxcs=3;;;0; bad_vxcs=0;;;0; up_vxcs=3;;;0; down_vxcs=0;;;0;
 ```
 
 **Some non-live**:
