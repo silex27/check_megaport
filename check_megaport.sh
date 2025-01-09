@@ -71,17 +71,21 @@ LIVE_VXCS=$(echo "$PRODUCTS_RESPONSE" | \
   jq '[.data[] | .associatedVxcs[]? | select(.provisioningStatus == "LIVE")] | length')
 BAD_VXCS=$(( TOTAL_VXCS - LIVE_VXCS ))
 
+UP_VXCS=$(echo "$PRODUCTS_RESPONSE" | \
+  jq '[.data[] | .associatedVxcs[]? | select(.resources.vll.up == 1)] | length')
+DOWN_VXCS=$(( TOTAL_VXCS - UP_VXCS ))
+
 # -----------------------------
 # 4) Determine status
 # -----------------------------
-if [[ "$BAD_PORTS" -eq 0 && "$BAD_VXCS" -eq 0 ]]; then
+if [[ "$BAD_PORTS" -eq 0 && "$BAD_VXCS" -eq 0 && "$DOWN_VXCS" -eq 0 ]]; then
   STATUS="OK"
   EXIT_CODE=0
-  HUMAN_READABLE="$STATUS - All ${TOTAL_PORTS} ports and ${TOTAL_VXCS} VXCs are LIVE."
+  HUMAN_READABLE="$STATUS - All ${TOTAL_PORTS} ports, ${TOTAL_VXCS} VXCs, and ${UP_VXCS} VXCs (up attribute) are LIVE."
 else
   STATUS="CRITICAL"
   EXIT_CODE=2
-  HUMAN_READABLE="$STATUS - ${BAD_PORTS} port(s) and ${BAD_VXCS} VXC(s) NOT LIVE out of ${TOTAL_PORTS} / ${TOTAL_VXCS}."
+  HUMAN_READABLE="$STATUS - ${BAD_PORTS} port(s), ${BAD_VXCS} VXC(s) NOT LIVE, and ${DOWN_VXCS} VXC(s) down (up attribute) out of ${TOTAL_PORTS} / ${TOTAL_VXCS}."
 fi
 
 # -----------------------------
@@ -92,7 +96,9 @@ live_ports=${LIVE_PORTS};;;0; \
 bad_ports=${BAD_PORTS};;;0; \
 total_vxcs=${TOTAL_VXCS};;;0; \
 live_vxcs=${LIVE_VXCS};;;0; \
-bad_vxcs=${BAD_VXCS};;;0;"
+bad_vxcs=${BAD_VXCS};;;0; \
+up_vxcs=${UP_VXCS};;;0; \
+down_vxcs=${DOWN_VXCS};;;0;"
 
 # -----------------------------
 # 6) Output & Exit
